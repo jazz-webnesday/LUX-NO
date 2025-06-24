@@ -1,0 +1,401 @@
+@font-face {
+    font-family: "squid";
+    src: url('../fonts/Game\ Of\ Squids.otf') format('opentype');
+    font-weight: normal;
+}
+@font-face {
+    font-family: "nova";
+    src: url(../fonts/SpaceNova-6Rpd1.otf) format('opentype');
+    font-weight: normal;
+}
+@font-face {
+    font-family: "valo";
+    src: url(../fonts/Valorax-lg25V.otf) format('opentype');
+    font-weight: normal;
+}
+@font-face {
+    font-family: "big";
+    src: url(../fonts/BigSpace-rPKx.ttf) format('true trype');
+    font-weight: normal;
+}
+/*@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');*/
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+
+:root{
+    --main-color: #E0218A;
+    --black: #090029;
+    --bg-color: #ff6ec7;
+    --white: #fff;
+    --light-white: rgba(255,255,255,.8);
+    --box-shadow: 0 .5rem 1rem rgba(0,0,0,.3);
+    --border: .2rem solid rgba(255,255,255, .1);
+}
+
+*{
+    box-sizing: border-box;
+    font-weight: normal;
+    outline: none; border: none;
+    margin: 0; padding: 0;
+    text-decoration: none;
+    text-transform: capitalize;
+}    
+
+html{
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+    scroll-padding: 9rem;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb{
+    background: var(--white);
+}
+
+body{
+    background: url(../images/1.png) no-repeat center center;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /*make the bg not zoom*/
+    background-position: center center;
+
+
+}
+
+section{
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#sidebarToggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  background: #b63b64;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 9999;
+  transition: background 0.3s;
+}
+#sidebarToggle:hover {
+  background: #90234a;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px; /* Hidden by default */
+  height: 100%;
+  width: 260px;
+  background: #1d1d2e;
+  color: #fff;
+  padding: 60px 20px;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.4);
+  transition: left 0.3s ease;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-family: "nova";
+  transition: color 0.3s;
+}
+.sidebar a:hover {
+  color: #ff6ec7;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.btn{
+    display: inline-block;
+     font-family: "squid";
+    margin-top: 1rem;
+    color: var(--white);
+    border-radius: .5rem;
+    border: .2rem solid var(--main-color);
+    font-size: 1.8rem;
+    padding: 0.5rem 3rem;
+    box-shadow: 0 0 10px #b63b64;
+    cursor: pointer;
+    background: none;
+    transition: .2s linear;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+}
+
+.btn::before{
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    height: 100%;
+    width: 0;
+    background: var(--main-color);
+    z-index: -1;
+    transition: .2s linear;
+}
+
+.btn:hover::before{
+    width: 100%;
+    left: 0;
+}
+
+
+
+.home{
+   
+}
+
+.home .flex {
+    display: flex;
+    align-items: center;
+    gap: 1vh;
+    min-height: 80vh;            /* reduced from 100vh to move it higher */
+    padding-top: 2rem;          /* optional: add top padding for better positioning */
+    flex-wrap: wrap-reverse;
+}
+
+
+.home .flex .content{
+    flex: 1 1 40rem;
+    text-align: center;
+}
+
+.home .flex .image img{
+    width: 65%;
+    height: 50%;
+    text-align: center;
+}
+
+.home .flex .content h3{
+    font-size: 50px;
+    text-align: left;
+    font-family: "nova";
+    color: var(--main-color);
+    text-transform: uppercase;
+    text-align: center;
+    
+}
+
+.home .flex .content h3 span{
+    color: var(--white);
+    font-size: 100px;
+    font-family: "valo";
+    text-transform: uppercase;
+    text-shadow: 0 0 30px #f5a6de;
+}
+
+/*.home .flex .content p{
+    font-size: 1.6rem;
+    color: var(--light-white);
+    padding: 1rem 0;
+    line-height: normal;
+    text-align: center;
+}*/
+
+.games{
+     font-family: "squid";
+    align-items: center;
+    min-height: 80vh;            /* reduced from 100vh to move it higher */
+    padding-top: 2rem;           /* optional: add top padding for better positioning */
+    padding: -10rem 2rem;
+}
+
+
+
+.games .box-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 2rem; /* spacing between boxes */
+    padding: 2rem 0;
+    justify-items: center; /* center items inside each cell */
+}
+
+.games .box img {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    margin-bottom: 40px;
+}
+
+.games .box img:hover {
+    box-shadow: 0 0 25px rgba(255, 182, 193, 0.8), 0 0 40px var(--main-color);
+    transform: scale(1.05);
+}
+
+.games .heading {
+    color: var(--white);
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #f5a6de;
+    text-align: center;
+    font-size: 8rem;
+    margin-bottom: 2rem;
+}
+
+.games .heading span {
+    color: var(--white);
+    text-shadow: 0 0 30px #f5a6de;
+}
+
+
+/* media queries */
+
+@media (max-width:991px){
+
+    html{
+        font-size: 55%; 
+    }
+}
+
+@media (max-width:768px){
+
+    #menu-btn{
+        display: inline-block;
+        box-shadow: 0 0 30px #b63b64;
+    }
+
+    .header .flex .navbar {
+        position: fixed;
+         font-family: "nova";
+        top: 0; left: -120%;
+        height: 100vh;
+        width: 100%; 
+        z-index: 2000;
+        background: var(--bg-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        flex-flow: column;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .header .flex .navbar.active {
+        left: 0;
+        font-family: "squid";
+    }
+
+    .header .flex .navbar a {
+        font-size: 4rem;
+        font-family: "squid";
+    }
+
+    .home .flex .content h3{
+        font-size: 9rem;
+    }
+    
+
+    @media (max-width: 768px) {
+    .games .box-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+    }
+}
+
+@media (max-width: 500px) {
+    .games .box-container {
+        grid-template-columns: 1fr; /* 1 column on mobile */
+    }
+}
+
+}
+
+@media (max-width:450px) {
+
+    html{
+        font-size: 50%; 
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+.contact .form{
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.contact .form h1{
+    font-size: 4rem;
+    color: var(--main-color);
+    text-transform: none;
+    text-align: center;
+    text-shadow: 0 0 30px #f5a6de;
+}
+
+.contact .form h1 span{
+    color: var(--white);
+    text-transform: uppercase;
+ 
+}
+
+.contact .form .flex{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.contact .form .flex .input{
+    flex: 1 1 40rem;
+}
+
+.contact .form .input,
+.contact .form textarea{
+    background: none;
+    color: var(--white);
+    border: var(--border);
+    border-color: #f5a6de;
+    border-radius: .2rem;
+    padding: 1.6rem;
+    font-size: 1.5rem;
+    text-transform: none;
+    font-family: "nova";
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+.contact .form .input:focus,
+.contact .form textarea:focus{
+    border-color: var(--main-color);
+    transition: .2s linear;
+}    
+
+.contact .form .input::placeholder,
+.contact .form textarea::placeholder{
+    text-transform: capitalize;
+}
+
+.contact .form textarea{
+    height: 15rem;
+    width: 100%;
+    margin-bottom: .5rem;
+    resize: none;
+}
+
+.contact .form .btn:hover{
+    background-color: var(--main-color);
+    box-shadow: 0 0 25px rgba(255, 182, 193, 0.8), 0 0 40px var(--main-color);
+    transform: scale(1.05);
+}

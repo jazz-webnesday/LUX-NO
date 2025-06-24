@@ -1,0 +1,180 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+*{
+  font-family: "Share Tech", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: url('../images/tosscoin.png') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed; /* Optional: creates a parallax-like effect */
+  text-align: center;
+  margin: 0;
+  padding: 2rem;
+}
+
+.container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 40px #f99ae9;
+  display: inline-block;
+  max-width: 100%;
+  width: 400px;
+}
+
+h1 {
+  font-size: 2.5em;
+  color: #333;
+  font-weight: bold;
+}
+
+h1 span {
+  color: #ce3ace;
+  font-weight: bold;
+  text-shadow: 0 0 30px #f5a6de;
+}
+
+#balance {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background: #e600ff;
+  box-shadow: 0 0 10px #b63b64;
+  color: white;
+}
+
+button:hover {
+  background: #ae0ede;
+}
+
+input,
+select {
+  padding: 5px;
+  font-size: 1em;
+  margin: 1px;
+}
+
+#result {
+  margin-top: 20px;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.coin {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  perspective: 1000px;
+}
+
+.coin div {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  border-radius: 60%;
+  backface-visibility: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.heads {
+  background-image: url('../images/head.png');
+}
+
+.tails {
+  background-image: url('../images/tail.png');
+  transform: rotateY(180deg);
+}
+
+@keyframes spinCoin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(1440deg); /* 4 full spins */
+  }
+}
+
+.coin.spin {
+  animation: spinCoin 3s ease-in-out forwards;
+}
+
+  .back-container {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.back-button {
+  background-color: #9702dccf;
+  color: #cccccc;
+  padding: 12px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12px;
+  box-shadow: 
+    0 0 10px #ae0ede;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #ce3ace;
+  color: white;
+  box-shadow:
+    0 0 15px #d2d4d4,
+    0 0 30px #ebefef;
+  transform: scale(1.05);
+}
+
+/* ========== MEDIA QUERIES ========== */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 1.5rem 1rem;
+    background-size: cover;
+    background-position: top center;
+  }
+
+  .container {
+    width: 100%;
+    padding: 20px 15px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .coin {
+    width: 80px;
+    height: 80px;
+  }
+
+  .coin div {
+    width: 80px;
+    height: 80px;
+  }
+
+  button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
