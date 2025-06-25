@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Memory Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: url(images/memory_bg.png) no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background-color: #fff9c4;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 28px;
+      color: rgb(173, 22, 128);
+      text-shadow: 0 0 5px #fff, 0 0 15px #fff;
+      margin-bottom: 15px;
+    }
+
+    label, #bank, #timer {
+      font-size: 14px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    input[type="number"], select {
+      padding: 5px;
+      font-size: 14px;
+      width: 120px;
+      margin-bottom: 10px;
+    }
+
+    #description {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: justify;
+      font-style: italic;
+      color: #333;
+    }
+
+    #start-game {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: red;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      border-radius: 10px;
+      text-shadow: 0 0 5px #fff, 0 0 15px #fff;
+    }
+
+    #start-game:hover {
+      background-color: darkred;
+    }
+
+    .game-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 30px;
+      width: 90%;
+      max-width: 1000px;
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 10px;
+    }
+
+    .card {
+      width: 80px;
+      height: 80px;
+      font-size: 32px;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid #f06292;
+      user-select: none;
+    }
+
+    .card.matched {
+      background-color: #c8e6c9;
+      cursor: default;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #popup-message {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup-box {
+      background-color: #fffdf2;
+      padding: 20px 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 300px;
+      font-size: 16px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .popup-box button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6b6b;
+      color: white;
+      cursor: pointer;
+    }
+
+    .back-container {
+      margin-top: 300px;
+      margin-left: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .back-button {
+      background-color: #ebefef;
+      color: #f06292;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 10px;
+      box-shadow: 0 0 10px #c12618, 0 0 20px #c7cece;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #f06292;
+      color: white;
+      box-shadow: 0 0 15px #d2d4d4, 0 0 30px #ebefef;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="container" id="ui-container">
+      <h1>MEMORY GAME</h1>
+      <p>Balance: <span id="bank">Loading...</span> tokens</p>
+      <p>Bet Amount: <input type="number" id="betAmount" min="1" value="1"></p>
+
+      <label for="difficulty">Choose Difficulty:</label>
+      <select id="difficulty">
+        <option value="2">🟢 Easy (1:30, x2)</option>
+        <option value="3">🟡 Medium (1:00, x3)</option>
+        <option value="4">🔴 Hard (0:30, x4)</option>
+      </select>
+
+      <div id="description">
+        To play, start by picking a difficulty level. Easy gives you 1 minute and 30 seconds with x2 your bet, Medium gives you 1 minute with x3 your bet, and Hard gives you just 30 seconds but rewards x4 your bet. Place your bet and hit Start!
+      </div>
+
+      <div id="timer">⏳ Time: 0s</div>
+      <button id="start-game">START</button>
+    </div>
+
+    <div id="game-board" class="hidden"></div>
+
+    <div id="popup-message" class="hidden">
+      <div class="popup-box">
+        <p id="popup-text"></p>
+        <button onclick="closePopup()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-container">
+    <a href="index.php" class="back-button">⬅ Back to Main</a>
+  </div>
+
+  <script>
+    let multiplier = 2;
+    let timer = 0;
+    let interval;
+    let flipped = [];
+    let matched = [];
+    let gameActive = false;
+    let currentBet = 0;
+    let balance = 0;
+
+    const board = document.getElementById("game-board");
+    const timerDisplay = document.getElementById("timer");
+    const bankDisplay = document.getElementById("bank");
+
+    function updateBankDisplay() {
+      bankDisplay.innerText = balance.toFixed(2);
+    }
+
+    async function fetchTokens() {
+      const res = await fetch("get_tokens.php");
+      const data = await res.json();
+      if (data.tokens !== undefined) {
+        balance = data.tokens;
+        updateBankDisplay();
+      } else {
+        showMessage('⚠️ Error fetching token balance.', true);
+      }
+    }
+
+    async function updateTokens(change) {
+      const res = await fetch("update_token.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ change })
+      });
+      const data = await res.json();
+      if (!data.success) {
+        showMessage("⚠️ Error updating token balance.");
+      }
+    }
+
+    function startTimer(difficulty) {
+      timer = difficulty === 4 ? 30 : difficulty === 3 ? 60 : 90;
+      timerDisplay.textContent = `⏳ Time: ${timer}s`;
+
+      interval = setInterval(() => {
+        timer--;
+        timerDisplay.textContent = `⏳ Time: ${timer}s`;
+
+        if (timer === 0) {
+          clearInterval(interval);
+          showMessage("⏳ Time's up! You lost your bet.");
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function createBoard() {
+      board.innerHTML = "";
+      const emojis = ["🍎", "🍌", "🍇", "🍓", "🍒", "🍉", "🍍", "🥝"];
+      const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+      flipped = [];
+      matched = [];
+
+      cards.forEach((emoji, index) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.emoji = emoji;
+        card.dataset.index = index;
+        card.innerText = "❓";
+        card.addEventListener("click", () => flipCard(card));
+        board.appendChild(card);
+      });
+    }
+
+    function flipCard(card) {
+      if (
+        card.classList.contains("flipped") ||
+        card.classList.contains("matched") ||
+        flipped.length === 2
+      ) return;
+
+      card.innerText = card.dataset.emoji;
+      card.classList.add("flipped");
+      flipped.push(card);
+
+      if (flipped.length === 2) {
+        const [first, second] = flipped;
+        if (first.dataset.emoji === second.dataset.emoji) {
+          first.classList.add("matched");
+          second.classList.add("matched");
+          matched.push(first, second);
+          flipped = [];
+
+          if (matched.length === 16) {
+            clearInterval(interval);
+            const winnings = currentBet * multiplier;
+            balance += winnings;
+            updateBankDisplay();
+            updateTokens(winnings);
+            setTimeout(() => {
+              showMessage(`🎉 You won! Tokens: ${balance.toFixed(2)}`);
+              endGame();
+            }, 300);
+          }
+        } else {
+          setTimeout(() => {
+            first.innerText = "❓";
+            second.innerText = "❓";
+            first.classList.remove("flipped");
+            second.classList.remove("flipped");
+            flipped = [];
+          }, 800);
+        }
+      }
+    }
+
+    function endGame() {
+      board.innerHTML = "";
+      board.classList.add("hidden");
+      gameActive = false;
+    }
+
+    function showMessage(message) {
+      document.getElementById("popup-text").innerText = message;
+      document.getElementById("popup-message").classList.remove("hidden");
+    }
+
+    function closePopup() {
+      document.getElementById("popup-message").classList.add("hidden");
+    }
+
+    document.getElementById("start-game").addEventListener("click", () => {
+      if (gameActive) return;
+
+      const betInput = document.getElementById("betAmount").value;
+      const betAmount = parseFloat(betInput);
+      multiplier = parseInt(document.getElementById("difficulty").value);
+
+      if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
+        showMessage("❌ Invalid bet! Enter a valid number within your balance.");
+        return;
+      }
+
+      currentBet = betAmount;
+      balance -= betAmount;
+      updateBankDisplay();
+      updateTokens(-betAmount);
+
+      startTimer(multiplier);
+      createBoard();
+      board.classList.remove("hidden");
+      gameActive = true;
+    });
+
+    // Fetch tokens on page load
+    fetchTokens();
+  </script>
+</body>
+</html>

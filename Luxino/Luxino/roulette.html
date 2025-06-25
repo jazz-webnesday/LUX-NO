@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎰 Roulette Game</title>
+  <style>
+
+    @font-face {
+      font-family: "KnightWarior";
+      src: url(fonts/KnightWarrior-w16n8.otf);
+      font-weight: bold;
+    }
+  body {
+    background: url(images/roulette_bg.png)no-repeat center center;
+    color: #fff;
+    background-size: cover;
+     background-attachment: fixed; 
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 9rem;
+    font-family: "KnightWarior";
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    color: #f5f5f5;
+    text-shadow: 0 0 10px #f9d342;
+  }
+   h4 {
+    font-size: 5rem;
+    font-family: "KnightWarior";
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    color: #f9d342;
+    text-shadow: 0 0 10px #f9d342;
+  }
+ 
+
+  .roulette-wheel {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 12px solid #ffd700;
+    margin: 30px auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px #f9d342;
+  }
+
+  .wheel-pointer {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid yellow; /* pointer pointing down */
+    position: absolute;
+    bottom: 280;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+
+  #wheelCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  p {
+  font-weight: bold;
+  font-family:'Times New Roman', Times, serif;
+  color: #ffe064; 
+  font-size: 20px;
+}
+
+p {
+  background-color: #fff3cd13; /* light yellow background */
+  padding: 15px 10px;
+  border-radius: 8px;
+  display:inline;
+  box-shadow: 0 0 5px rgb(241, 238, 11);
+}
+
+#betAmount {
+  width: 70px;
+  text-align: center;
+  padding: 3px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  border-radius: 6px;
+  border: 1px solid #cccccc57;
+}
+
+
+  button {
+    font-family: Georgia, serif;
+    padding: 10px 25px;
+    background-color: #e8c01e;
+    color: white;
+    border: none;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 
+    0 0 10px #c12618,
+    0 0 20px #c7cece;
+  transition: all 0.3s ease;
+  
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #d2f10b;
+  }
+
+  input {
+    padding: 8px;
+    width: 80px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  #balance {
+    font-weight: bold;
+    color: #80d8ff;
+  }
+
+  #resultMessage {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    min-height: 40px;
+  }
+
+   #instructions{
+    margin-top:20px;
+    font-family:'Times New Roman', Times, serif;
+    font-size: .95rem;
+    text-shadow: #f60f0f;
+    color:#cccccc;
+    text-align:center;
+  }
+
+  .back-container {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.back-button {
+  background-color: #bfc0c010;
+  color: #cccccc;
+  padding: 12px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 
+    0 0 10px #c12618,
+    0 0 20px #c7cece;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #4a0000;
+  color: white;
+  box-shadow:
+    0 0 15px #d2d4d4,
+    0 0 30px #ebefef;
+  transform: scale(1.05);
+}
+#resultPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #222;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 
+    0 0 30px rgba(255, 243, 7, 0.974);
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+#resultPopup.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+@keyframes popFade {
+  0% { transform: scale(0.6); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pop {
+  animation: popFade 0.6s ease;
+}
+
+
+</style>
+
+</head>
+<body>
+  <h1>Roulette Game</h1>
+  <h4>SPIN IT TO WIN IT!</h4>
+
+  <p><span id="bank">Loading...</span> </p>
+  <p>Bet: <input type="number" id="betAmount" min="1" value="1"></p>
+
+  <div class="roulette-wheel">
+    <div class="wheel-pointer"></div> <!-- Fixed pointer at bottom center -->
+    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+  </div>
+
+
+  <div>
+    <button onclick="placeBet(1, 7)">Bet 1–7</button>
+    <button onclick="placeBet(0, 0)">Bet 0</button>
+    <button onclick="placeBet(8, 14)">Bet 8–14</button>
+  </div>
+
+  <div id="instructions">
+    BET 1-7 and 8-14 to double your money! BET 0 and win to TRIPLE YOUR MONEY!
+  </div>
+<div id="resultPopup"></div>
+
+  <h3 id="finalResult"></h3>
+  <h3 id="resultMessage"></h3>
+
+  <!-- Sound Effects -->
+  <audio id="winSound" src="sounds/mixkit-game-success-alert-2039.wav" preload="auto"></audio>
+  <audio id="loseSound" src="sounds/mixkit-retro-arcade-game-over-470.wav" preload="auto"></audio>
+  <audio id="spinSound" src="sounds/mixkit-bike-wheel-spinning-1613.wav" preload="auto" loop></audio>
+
+
+  <script>
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const segments = 15;
+    const segmentAngle = 360 / segments;
+
+    const winSound = document.getElementById('winSound');
+    const loseSound = document.getElementById('loseSound');
+    /*added*/
+    let currentBet = 0;
+    let balance = 0;
+
+
+    function updateBankDisplay() {
+      document.getElementById('bank').innerText = `💵 Tokens: ${Math.floor(balance)}`;
+    }
+
+     async function fetchTokens() {
+      const res = await fetch("get_tokens.php");
+      const data = await res.json();
+      if (data.tokens !== undefined) {
+        balance = data.tokens;
+        updateBankDisplay();
+      } else {
+        showMessage('Not enough funds.', true);
+    return;
+      }
+    }
+
+    async function updateTokens(change) {
+      const res = await fetch("update_tokens.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ change })
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        alert("Error updating token balance.");
+      }
+    }
+
+   /* async function getBalance() {
+      // Fake API call simulation, replace with your real call
+      // For demo, just set balance to 100 if not set
+      if(balance === 0) balance = 1000;
+      document.getElementById('balance').textContent = balance;
+    }*/
+
+    function drawWheel() {
+      const colors = ['#00e676', '#d50000', '#263238'];
+      for (let i = 0; i < segments; i++) {
+        ctx.beginPath();
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, i * (2 * Math.PI / segments), (i + 1) * (2 * Math.PI / segments));
+        ctx.fillStyle = colors[i === 0 ? 0 : (i % 2) + 1];
+        ctx.fill();
+        ctx.save();
+        ctx.fillStyle = 'white';
+        ctx.font = '16px Arial';
+        ctx.translate(150, 150);
+        ctx.rotate((i + 0.5) * (2 * Math.PI / segments));
+        ctx.textAlign = 'center';
+        ctx.fillText(i, 100, 10);
+        ctx.restore();
+      }
+    }
+
+    /*async function updateTokens(change) {
+      // Fake update for demo, you can replace with your real API call
+      balance += change;
+      if(balance < 0) balance = 0;
+      document.getElementById('balance').textContent = balance;
+    }
+
+    function placeBet(start, end) {
+      const bet = parseInt(document.getElementById('betAmount').value);
+      if (isNaN(bet) || bet <= 0 || bet > balance) {
+        alert('Invalid bet amount.');
+        return;
+      }
+
+      updateTokens(-bet);*/
+
+      function placeBet(start, end) {
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  if (!bet || bet <= 0) {
+    alert("Please enter a valid bet amount.");
+    return;
+  }
+
+  if (bet > balance) {
+    alert("Not enough tokens to place this bet.");
+    return;
+  }
+
+  currentBet = bet;
+  balance -= bet; // Subtract bet upfront
+  updateBankDisplay();
+  updateTokens(-bet); // Deduct bet tokens on server
+
+  // Clear previous results
+  document.getElementById('finalResult').textContent = '';
+  document.getElementById('resultMessage').textContent = '';
+
+  const spins = 5;
+  const randomSegment = Math.floor(Math.random() * segments);
+  const totalRotation = spins * 360 + randomSegment * segmentAngle;
+  const spinSound = document.getElementById('spinSound');
+
+  canvas.style.transition = 'transform 4s ease-out';
+  spinSound.play();
+  canvas.style.transform = `rotate(${totalRotation}deg)`;
+
+  setTimeout(async () => {
+    canvas.style.transition = 'none';
+    const finalRotation = totalRotation % 360;
+    canvas.style.transform = `rotate(${finalRotation}deg)`;
+    spinSound.pause();
+    spinSound.currentTime = 0;
+
+    const pointerAngle = 270;
+    const normalizedAngle = (pointerAngle - finalRotation + 360) % 360;
+    const landedSegment = Math.floor(normalizedAngle / segmentAngle);
+
+    let message = '';
+    let reward = 0;
+
+    if (landedSegment >= start && landedSegment <= end) {
+      // Win cases
+      if (start === 0 && end === 0) {
+        reward = bet * 3;
+      } else {
+        reward = bet * 2;
+      }
+      message = `🎉 You won ${reward} tokens!`;
+      balance += reward; // Add winnings locally
+      await updateTokens(reward); // Add tokens on backend
+      winSound.play();
+    } else {
+      message = `😢 You lost ${bet} tokens.`;
+      loseSound.play();
+    }
+
+    const popup = document.getElementById('resultPopup');
+    popup.textContent = ` Result: ${landedSegment}\n${message}`;
+    popup.classList.add('show');
+
+    setTimeout(() => {
+      popup.classList.remove('show');
+      updateBankDisplay();
+    }, 3000);
+
+  }, 4000);
+}
+
+
+
+    drawWheel();
+    //getBalance();
+    fetchTokens();
+    update();
+  </script>
+
+  <br>
+  <div class="back-container">
+  <a href="index.php" class="back-button">⬅ Back to Main</a>
+</div>
+
+</body>
+</html>
