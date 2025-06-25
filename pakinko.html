@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎯 Plinko Betting Game</title>
+  <style>
+    @font-face {
+      font-family: "rebellionsquad";
+      src: url(fonts/RebellionSquad-ZpprZ.ttf) format('truetype');
+    }
+    body {
+      margin: 0;
+      font-family:cursive;
+      background: url(images/plinko_bg.png.png)no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed; 
+      color: #e2e7e6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+
+    h1 {
+      font-family: "rebellionsquad";
+      font-weight: normal;
+      margin-top: 75px;
+      margin-bottom: 20px;
+      font-size: 75px;
+      color: #fc944f;
+      text-shadow:
+        0 0 10px #00fff7,
+        0 0 20px #00fff7,
+        0 0 30px #00fff7,
+        0 0 40px #00fff7;
+    }
+    h4 {
+      font-family: "rebellionsquad";
+      font-weight: lighter;
+      font-size: 20px;
+      gap: 2px;
+      text-shadow: #002f2f;
+      margin-top: -20px;
+    }
+
+    canvas {
+      background-color: #00000012;
+      margin-top: -25px;
+      border: 2px solid #00fff7;
+      box-shadow:
+        0 0 10px #00fff7,
+        0 0 20px #00fff7;
+    }
+
+    #controls {
+      margin-top: 15px;
+    }
+
+    #controls input, #controls button {
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #002f2f;
+      color: #00fff7;
+      box-shadow:
+        0 0 5px #00fff7,
+        0 0 10px #00fff7;
+      transition: background-color 0.3s ease;
+    }
+
+    #controls input:focus {
+      outline: none;
+      background-color: #fc944f;
+      box-shadow:
+        0 0 10px #00fff7,
+        0 0 20px #00fff7;
+      color: white;
+    }
+
+    #controls button {
+      background-color: #fc944f;
+      color: #ebefef;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: -50px;
+    }
+
+    #controls button:hover {
+      background-color: #00ccc7;
+      box-shadow:
+        0 0 15px #00ccc7,
+        0 0 30px #00ccc7;
+      color: white;
+    }
+
+    #bank {
+      font-family: "rebellionsquad";
+      font-weight: lighter;
+      margin-top: 50px;
+      font-size: 24px;
+      color:#152828;
+      text-shadow:none;
+    }
+
+   #result {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #c3c6c6;
+  background: rgba(0, 0, 0, 0.7);
+  text-shadow: none;
+  padding: 16px 30px;
+  border-radius: 12px;
+  border: 2px solid #00fff7;
+  box-shadow:
+    0 0 10px #00fff7,
+    0 0 20px #00fff7,
+    0 0 30px #00fff7;
+  text-align: center;
+  max-width: 600px;
+
+  /* Start hidden */
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Class to trigger pop and show */
+#result.pop {
+  opacity: 1;
+  transform: scale(1);
+  animation: glow-pulse 2s infinite alternate;
+}
+
+@keyframes glow-pulse {
+  0% {
+    box-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7;
+  }
+  100% {
+    box-shadow: 0 0 20px #00fff7, 0 0 40px #00fff7;
+  }
+}
+
+    a {
+      margin: 20px;
+      color: #00fff7;
+      text-decoration: none;
+      text-shadow:
+        0 0 7px #00fff7,
+        0 0 14px #00fff7;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #00ccc7;
+      text-shadow:
+        0 0 14px #00ccc7,
+        0 0 28px #00ccc7;
+    }
+
+    @keyframes sink-glow {
+      0% { box-shadow: 0 0 0px #00fff7; }
+      50% { box-shadow: 0 0 25px #00fff7; }
+      100% { box-shadow: 0 0 0px #00fff7; }
+    }
+
+    .back-button {
+  background-color: #0c96c8;
+  color: #ebefef;
+  padding: 12px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 
+    0 0 10px #00ffea;
+
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #f0d046;
+  color: white;
+  box-shadow:
+    0 0 15px #d2d4d4,
+    0 0 30px #ebefef;
+  transform: scale(1.05);
+}
+
+  </style>
+</head>
+<body>
+
+  <h1> Plinko Betting Game</h1>
+  <h4> BRING DOWN TO MULTIPLY!</h4>
+
+  <div id="bank">💵 Tokens: Loading...</div>
+
+  <div id="controls">
+    <input id="betAmount" type="number" placeholder="Enter bet amount" />
+    <button onclick="placeBet()">Place Bet</button>
+  </div>
+
+  <div id="result"></div>
+
+  <canvas id="gameCanvas" width="800" height="800">
+    <div id="result"></div>
+    <h3>Drop as much as Ball you want! Make your bet be multiplied! </h3>
+  </canvas>
+
+
+  <audio id="winSound" src="sounds/mixkit-winning-a-coin-video-game-2069.wav" preload="auto"></audio>
+
+  <br>
+  <div class="back-container">
+  <a href="index.php" class="back-button">⬅ Back to Main</a>
+</div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const DECIMAL_MULTIPLIER = 10000;
+    const WIDTH = 800;
+    const HEIGHT = 800;
+    const ballRadius = 7;
+    const obstacleRadius = 4;
+    const gravity = pad(0.2);
+    const horizontalFriction = 0.4;
+    const verticalFriction = 0.8;
+
+    const balls = [];
+    const obstacles = [];
+    const sinks = [];
+
+    let currentBet = 0;
+    let ballCount = 0;
+    let balance = 0;
+
+    function pad(n) {
+      return n * DECIMAL_MULTIPLIER;
+    }
+
+    function unpad(n) {
+      return Math.floor(n / DECIMAL_MULTIPLIER);
+    }
+
+    function updateBankDisplay() {
+      document.getElementById('bank').innerText = `💵 Tokens: ${Math.floor(balance)}`;
+    }
+//balance.toFixed(2)
+    async function fetchTokens() {
+      const res = await fetch("get_tokens.php");
+      const data = await res.json();
+      if (data.tokens !== undefined) {
+        balance = data.tokens;
+        updateBankDisplay();
+      } else {
+        alert("Error loading tokens.");
+      }
+    }
+
+    async function updateTokens(change) {
+      const res = await fetch("update_tokens.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ change })
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        alert("Error updating token balance.");
+      }
+    }
+
+    function placeBet() {
+      const amount = parseFloat(document.getElementById('betAmount').value);
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid bet amount.");
+        return;
+      }
+
+      if (amount > balance) {
+        alert("Not enough tokens to place this bet.");
+        return;
+      }
+
+      currentBet = amount;
+      balance -= amount;
+      updateBankDisplay();
+      updateTokens(-amount);
+      addBall();
+      document.getElementById('dropSound').play();
+    }
+
+    const resultEl = document.getElementById('result');
+
+    function showResult(text) {
+      resultEl.classList.remove('pop');   // reset animation
+      void resultEl.offsetWidth;          // trigger reflow
+      resultEl.innerText = text;
+      resultEl.classList.add('pop');      // add pop to trigger transition
+}
+
+
+    function addBall() {
+      const newBall = new Ball(pad(WIDTH / 2 + 13), pad(50), ballRadius, '#00fff7');
+      newBall.vx = (Math.random() - 0.5) * 1.5; // small random push left or right
+      newBall.id = ++ballCount;
+      newBall.bet = currentBet;
+      newBall.landed = false;
+      balls.push(newBall);
+    }
+
+    class Ball {
+      constructor(x, y, radius, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.vx = 0;
+        this.vy = 0;
+        this.landed = false;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 15;
+        ctx.arc(unpad(this.x), unpad(this.y), this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFD700'
+        ctx.fill();
+        ctx.closePath();
+        ctx.shadowBlur = 0;
+      }
+
+      update() {
+        this.vy += gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Collision with obstacles
+        obstacles.forEach(obstacle => {
+          const dist = Math.hypot(this.x - obstacle.x, this.y - obstacle.y);
+          if (dist < pad(this.radius + obstacle.radius)) {
+            const angle = Math.atan2(this.y - obstacle.y, this.x - obstacle.x);
+            const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+            this.vx = Math.cos(angle) * speed * horizontalFriction;
+            this.vy = Math.sin(angle) * speed * verticalFriction;
+
+            const overlap = this.radius + obstacle.radius - unpad(dist);
+            this.x += pad(Math.cos(angle) * overlap);
+            this.y += pad(Math.sin(angle) * overlap);
+          }
+        });
+
+        // Detect landing in a sink
+        sinks.forEach((sink) => {
+          if (
+            unpad(this.x) > sink.x - sink.width / 2 &&
+            unpad(this.x) < sink.x + sink.width / 2 &&
+            unpad(this.y) + this.radius > sink.y - sink.height / 2 &&
+            !this.landed
+          ) {
+            this.vx = 0;
+            this.vy = 0;
+            this.landed = true;
+
+            const multiplier = sink.multiplier || 1;
+            const win = this.bet * multiplier;
+            balance += win;
+            updateBankDisplay();
+            updateTokens(win);
+
+            document.getElementById("winSound").play();
+
+            const glow = document.createElement("div");
+            glow.classList.add("highlight-sink");
+            glow.style.left = `${sink.x + canvas.offsetLeft}px`;
+            glow.style.top = `${sink.y + canvas.offsetTop - sink.height / 2}px`;
+            glow.style.width = `${sink.width}px`;
+            glow.style.height = `${sink.height}px`;
+            glow.style.border = "2px solid #00fff7";
+            glow.style.borderRadius = "4px";
+            document.body.appendChild(glow);
+            setTimeout(() => glow.remove(), 1000);
+
+            showResult(`🎉 Ball #${this.id} landed in ${multiplier}x 
+            You won ${Math.floor(win)} tokens!`);
+
+          }
+        });
+      }
+    }
+
+    // Initialize obstacles
+    const rows = 16;
+    for (let row = 2; row < rows; row++) {
+      const numObstacles = row + 1;
+      const y = 0 + row * 35;
+      const spacing = 36;
+      for (let col = 0; col < numObstacles; col++) {
+        const x = WIDTH / 2 - spacing * (row / 2 - col);
+        obstacles.push({ x: pad(x), y: pad(y), radius: obstacleRadius });
+      }
+    }
+
+    const sinkWidth = 36;
+    const NUM_SINKS = 15;
+    const MULTIPLIERS = [16, 9, 2, 1.4, 1.4, 1.2, 1.1, 1, 0.5, 1, 1.1, 1.2, 1.4, 1.4, 2];
+
+    for (let i = 0; i < NUM_SINKS; i++) {
+      const x = WIDTH / 2 + (i - 7.5) * sinkWidth + obstacleRadius;
+      const y = HEIGHT - 240;
+      sinks.push({ x, y, width: sinkWidth, height: sinkWidth, multiplier: MULTIPLIERS[i] });
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = '#00fff7';
+      ctx.shadowColor = '#00fff7';
+      ctx.shadowBlur = 10;
+      obstacles.forEach(obstacle => {
+        ctx.beginPath();
+        ctx.arc(unpad(obstacle.x), unpad(obstacle.y), obstacle.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+      });
+      ctx.shadowBlur = 0;
+    }
+
+    function drawSinks() {
+      ctx.font = "14px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const gap = 1; // space between boxes
+      const leftOffset = -10; // move all boxes 10 pixels left
+
+      sinks.forEach((sink, i) => {
+        const x = sink.x + i * gap + leftOffset;
+
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 1.5;
+        ctx.fillStyle = 'rgba(0,0,0,0)'; // transparent inside
+
+        ctx.shadowColor = 'blue';
+        ctx.shadowBlur = 15;
+
+        ctx.beginPath();
+        ctx.rect(
+          x,
+          sink.y - sink.height / 2,
+          sink.width - gap,
+          sink.height
+        );
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = 'white';
+        ctx.fillText(
+          `${sink.multiplier}x`,
+          x + (sink.width - gap) / 2,
+          sink.y
+        );
+
+        ctx.shadowBlur = 0;
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      drawObstacles();
+      drawSinks();
+      balls.forEach(ball => {
+        ball.draw();
+        ball.update();
+      });
+    }
+
+    function update() {
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    fetchTokens();
+    update();
+  </script>
+
+</body>
+</html>

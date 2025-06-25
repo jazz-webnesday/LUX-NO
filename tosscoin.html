@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FLIP Coin Game</title>
+  <link rel="stylesheet" href="css/tosscoin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>FLIP<span> COIN</span></h1>
+
+    <!-- 3D Coin Display -->
+<div class="coin" id="coin">
+  <div class="heads"></div>
+  <div class="tails"></div>
+</div>
+
+
+ <div id="bank">💵 Tokens: Loading...</div>
+
+  <div id="controls">
+    <input id="betAmount" type="number" placeholder="Enter bet amount" />
+    <button onclick="placeBet()">Place Bet</button>
+  </div>
+
+      <label>Choose Heads or Tails:</label>
+        <select id="userChoice">
+          <option value="heads">Heads</option>
+          <option value="tails">Tails</option>
+        </select><br><br>
+
+       <div id="result"></div>
+
+  <!--- <label>Bet Amount:</label>
+     <input type="number" id="betAmount" min="1" value="0"><br><br>
+
+    <button onclick="placeBet()">Place Bet</button>
+
+    <div id="result"></div>
+  </div>-->
+
+  <script>/*let balance = 50;
+
+function updateBalanceDisplay() {
+  document.getElementById("balance").innerText = `Balance: ₱${balance}`;
+}
+
+function placeBet() {
+  const userChoice = document.getElementById("userChoice").value;
+  const betAmount = parseInt(document.getElementById("betAmount").value);
+  const resultDiv = document.getElementById("result");
+  const coin = document.getElementById("coin");
+
+  if (betAmount > balance) {
+    resultDiv.innerHTML = "Not enough balance.";
+    return;
+  }*/
+
+  let currentBet = 0;
+  let balance = 0;
+
+     function updateBankDisplay() {
+      document.getElementById('bank').innerText = `💵 Tokens: ${Math.floor(balance)}  `;
+    }
+
+    async function fetchTokens() {
+      const res = await fetch("get_tokens.php");
+      const data = await res.json();
+      if (data.tokens !== undefined) {
+        balance = data.tokens;
+        updateBankDisplay();
+      } else {
+        alert("Error loading tokens.");
+      }
+    }
+
+    async function updateTokens(change) {
+      const res = await fetch("update_tokens.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ change })
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        alert("Error updating token balance.");
+      }
+    }
+
+function placeBet() {
+  const userChoice = document.getElementById("userChoice").value;
+  const amount = parseFloat(document.getElementById('betAmount').value);
+  const resultDiv = document.getElementById("result");
+  const coin = document.getElementById("coin");
+
+  if (!amount || amount <= 0) {
+    alert("Please enter a valid bet amount.");
+    return;
+  }
+
+  if (amount > balance) {
+    alert("Not enough tokens to place this bet.");
+    return;
+  }
+
+  currentBet = amount;
+  balance -= amount;
+  updateBankDisplay();
+  updateTokens(-amount);
+
+  // Coin flip logic
+  const isHeads = Math.random() < 0.5;
+  const coinResult = isHeads ? "heads" : "tails";
+  const spins = Math.floor(Math.random() * 3 + 3); // 3-5 spins
+  const finalAngle = isHeads ? 0 : 180;
+  const totalRotation = 360 * spins + finalAngle;
+
+  // Apply rotation
+  coin.style.transition = 'transform 2s ease-in-out';
+  coin.style.transform = `rotateY(${totalRotation}deg)`;
+
+  setTimeout(() => {
+    if (userChoice === coinResult) {
+      const winnings = amount * 2;
+      balance += winnings;
+      resultDiv.innerHTML = `🎉 You win ${Math.floor(winnings)} tokens! Coin was <strong>${coinResult}</strong>.`;
+      updateTokens(winnings);
+    } else {
+      resultDiv.innerHTML = `😞 You lost ${Math.floor(amount)} tokens. Coin was <strong>${coinResult}</strong>.`;
+    }
+    updateBankDisplay();
+  }, 2000);
+}
+
+    fetchTokens();
+
+
+//window.onload = updateBalanceDisplay;
+ </script>
+     <br>
+  <div class="back-container">
+  <a href="index.php" class="back-button">⬅ Back to Main</a>
+</div>
+
+</body>
+</html>
